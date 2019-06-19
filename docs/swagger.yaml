@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: Turing API
+  description: API endpoints for Turing API
+
+version: 0.1.9
+
+servers:
+  - url: http://localhost:3003/api
+  - url: https://turing-api-endpoints.herokuapp.com/api
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          example: shirt
+
+paths:
+  /products:
+    get:
+      summary: Retrieve all products
+      description: Retrieve all products from api
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Inform the page. Starting with 1. Default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit per page, Default: 20.
+        - in: query
+          name: description_length
+          schema:
+            type: integer
+          description: Limit of the description, Default: 200.
+      responses:
+        200:
+          description: Get All Products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 40
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: number
+                          example: 1
+                        name:
+                          type: string
+                          example: Chartres Cathedral
+                        description:
+                          type: string
+                          example: "\"The Fur Merchants\". Not all the beautiful stained glass in the great cathedrals depicts saints and angels! Lay aside your furs for the summer and wear this beautiful T-shirt!"
+                        price:
+                          type: string
+                          example: 16.95
+                        discounted_price:
+                          type: string
+                          example: 15.95
+                        thumbnail:
+                          type: string
+                          example: chartres-cathedral-thumbnail.gif

@@ -1,0 +1,7 @@
+.env
+node_modules
+dist
+
+# Coverage directory used by nyc
+.nyc_output
+coverage
