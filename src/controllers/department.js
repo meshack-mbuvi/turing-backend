@@ -1,4 +1,4 @@
-import {departCustomError} from '../errors/departmentErrors';
+import {departCustomError} from '../errors/index';
 const Department = require ('../sequelize/models').Department;
 
 export class DepartmentController {
@@ -12,7 +12,7 @@ export class DepartmentController {
     if (isNaN (department_id)) {
       return res
         .status (400)
-        .send ({error: departCustomError ('DEP_01', 400, 'id')});
+        .send ({error: departCustomError ('DEP_01', 400, 'department_id')});
     }
     const department = await Department.findOne ({
       where: {
@@ -23,7 +23,7 @@ export class DepartmentController {
     if (!department) {
       return res
         .status (404)
-        .send ({error: departCustomError ('DEP_02', 404, 'id')});
+        .send ({error: departCustomError ('DEP_02', 404, 'department_id')});
     }
 
     return res.status (200).send (department);

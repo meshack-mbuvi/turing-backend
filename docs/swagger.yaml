@@ -17,6 +17,42 @@ components:
         name:
           type: string
           example: shirt
+    Department:
+      type: object
+      properties:
+        department_id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: Regional
+        description:
+          type: string
+          example: Proud of your country? Wear a T-shirt with a national symbol stamp!
+    Departments:
+      type: array
+      items:
+        $ref: '#components/schemas/Department'
+    Category:
+      type: object
+      properties:
+        category_id:
+          type: number
+          example: 1
+        department_id:
+          type: number
+          example: 3
+        name:
+          type: string
+          example: Regional
+        description:
+          type: string
+          example: It was Churchill who remarked that he thought the Irish most curious because they didn't want to be English. How right he was! But then, he was half-American, wasn't he? If you have an Irish genealogy you will want these T-shirts! If you suddenly turn Irish on St. Patrick's Day, you too will want these T-shirts! Take a look at some of the coolest T-shirts we have!"
+    Categories:
+      type: array
+      items:
+        $ref: '#components/schemas/Category'
+
 
 paths:
   /products:
@@ -94,21 +130,93 @@ paths:
             application/json:
               schema:
                 type: object
+                $ref: '#components/schemas/Departments'
+  /departments/{department_id}:
+    get:
+      summary: Get a department
+      description: Get a department
+      tags:
+        - Departments
+      parameters:
+        - in: path
+          name: department_id
+          schema:
+            type: integer
+          description: ID of Department
+      responses:
+        200:
+          description: Get a department
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Department'
+  /categories:
+    get:
+      summary: Get categories
+      description: Return a list of categories
+      tags:
+        - Category
+      parameters:
+        - in: path
+          name: category_id
+          schema:
+            type: integer
+          description: ID of a category
+      responses:
+        200:
+          description: Get All categories
+          content:
+            application/json:
+              schema:
+                type: object
                 properties:
                   count:
                     type: number
                     example: 40
                   rows:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        department_id:
-                          type: number
-                          example: 1
-                        name:
-                          type: string
-                          example: Regional
-                        description:
-                          type: string
-                          example: Proud of your country? Wear a T-shirt with a national symbol stamp!
+                    $ref: '#components/schemas/Categories'
+  /categories/{category_id}:
+    get:
+      summary: Get a single category
+      description: Return a category
+      tags:
+        - Category
+      parameters:
+        - in: path
+          name: category_id
+          schema:
+            type: integer
+          description: ID of a category
+      responses:
+        200:
+          description: Get a categories
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Categories'
+  /categories/inDepartment/{department_id}:
+    get:
+      summary: Get categories of a department
+      description: Return a list of categories
+      tags:
+        - Category
+      parameters:
+        - in: path
+          name: department_id
+          schema:
+            type: integer
+          description: ID of a department
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 40
+                  rows:
+                    $ref: '#components/schemas/Categories'

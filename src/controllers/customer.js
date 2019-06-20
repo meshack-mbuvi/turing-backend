@@ -1,5 +1,5 @@
 const Customer = require ('../sequelize/models').Customer;
-import {customError} from '../errors/userErrors';
+import {customError} from '../errors/index';
 
 const jwt = require ('jsonwebtoken');
 const bcrypt = require ('bcrypt');

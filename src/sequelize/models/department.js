@@ -19,7 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Department.associate = function (models) {
-    // associations can be defined here
+    Department.hasMany (models.Category, {
+      foreignKey: 'category_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      as: 'categories',
+    });
   };
   return Department;
 };

@@ -12,7 +12,7 @@
     "build-src": "babel ./src -d dist --copy-files",
     "build": "npm run clean && npm run build-src",
     "start": "npm run build && node dist/index.js",
-    "run:test": "NODE_ENV=test nyc mocha --require @babel/register test/**/test.js",
+    "run:test": "NODE_ENV=test nyc mocha --require @babel/register test/**/*.js",
     "sequelize:undo:seed": "NODE_ENV=test sequelize db:seed:undo:all",
     "test": "npm run sequelize:migrate && npm run run:test"
   },
