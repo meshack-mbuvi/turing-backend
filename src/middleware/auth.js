@@ -2,7 +2,7 @@ const jwt = require ('jsonwebtoken');
 
 export const authentication = (req, res, next) => {
   const url = req.originalUrl;
-  if (url === '/api/users/login' || url === '/api/users/signup') {
+  if (url === '/api/customers' || url === '/api/customers/login') {
     return next ();
   }
 
