@@ -20,7 +20,7 @@ describe ('Department tests', () => {
     await server.close ();
   });
 
-  describe ('Post /api/departments', () => {
+  describe ('Get /api/departments', () => {
     it ('should retrieve all departments', async () => {
       const res = await request (server).get (`${BASE_URL}`);
       expect (res.body.length).to.equal (3);
