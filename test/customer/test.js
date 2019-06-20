@@ -1,7 +1,9 @@
-import {createApp} from '../src/lib/createApp';
+import {createApp} from '../../src/lib/createApp';
 import request from 'supertest';
 import chai from 'chai';
-import truncate from './truncate';
+import truncate from '../truncate';
+
+const Customer = require ('../../src/sequelize/models').Customer;
 
 const {expect} = chai;
 
@@ -20,8 +22,11 @@ describe ('All tests', () => {
   });
 
   describe ('Post /api/customers', () => {
+    beforeEach (async () => {
+      await Customer.sync ({force: true});
+    });
     it ('should create user account', async () => {
-      const {body, status} = await request (server).post (`${BASE_URL}`).send ({
+      const {status} = await request (server).post (`${BASE_URL}`).send ({
         name: 'testsre',
         password: 'test12rterte',
         email: 'test3mdbsjdfg@test.com',
@@ -51,8 +56,14 @@ describe ('All tests', () => {
       expect (status).to.equal (400);
     });
   });
+
   describe ('Post /api/customers/login', () => {
     it ('should login user', async () => {
+      await request (server).post (`${BASE_URL}`).send ({
+        name: 'testsre',
+        password: 'test12rterte',
+        email: 'test3mdbsjdfg@test.com',
+      });
       const {body, status} = await request (server)
         .post (`${BASE_URL}/login`)
         .send ({
