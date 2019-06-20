@@ -1,9 +1,10 @@
 import {createApp} from './lib/createApp';
 const cluster = require ('cluster');
+const db = require ('./sequelize/models/index.js').db;
 
 const PORT = process.env.PORT || 3003;
+async function main() {
 
-async function main () {
   try {
     if (cluster.isMaster) {
       var cpuCount = require ('os').cpus ().length;
