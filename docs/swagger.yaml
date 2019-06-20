@@ -75,3 +75,40 @@ paths:
                         thumbnail:
                           type: string
                           example: chartres-cathedral-thumbnail.gif
+  /departments:
+    get:
+      summary: Retrieve all departments
+      description: Return a list of departments
+      tags:
+        - Departments
+      parameters:
+        - in: path
+          name: department_id
+          schema:
+            type: integer
+          description: ID of Department
+      responses:
+        200:
+          description: Get All departments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 40
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        department_id:
+                          type: number
+                          example: 1
+                        name:
+                          type: string
+                          example: Regional
+                        description:
+                          type: string
+                          example: Proud of your country? Wear a T-shirt with a national symbol stamp!
