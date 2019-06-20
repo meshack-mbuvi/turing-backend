@@ -6,13 +6,14 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "start:dev": "nodemon --exec babel-node src/index",
-    "sequelize:migrate": "NODE_ENV=test sequelize db:migrate",
+    "sequelize:migrate": "NODE_ENV=test sequelize db:migrate && NODE_ENV=test sequelize db:seed:undo:all && NODE_ENV=test sequelize db:seed:all",
     "installDep": "npm install",
     "clean": "rimraf ./dist ",
     "build-src": "babel ./src -d dist --copy-files",
     "build": "npm run clean && npm run build-src",
     "start": "npm run build && node dist/index.js",
-    "run:test": "NODE_ENV=test nyc mocha --require @babel/register test/test.js",
+    "run:test": "NODE_ENV=test nyc mocha --require @babel/register test/**/test.js",
+    "sequelize:undo:seed": "NODE_ENV=test sequelize db:seed:undo:all",
     "test": "npm run sequelize:migrate && npm run run:test"
   },
   "repository": {
@@ -60,6 +61,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^5.16.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.1"
   },
