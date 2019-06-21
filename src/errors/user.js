@@ -1,4 +1,4 @@
-export const userErrors = {
+const Errors = {
   USR_01: 'Email or Password is invalid.',
   USR_02: 'The field(s) are/is required.',
   USR_03: 'The email is invalid.',
@@ -10,11 +10,11 @@ export const userErrors = {
   USR_09: 'The Shipping Region ID is not number',
 };
 
-export const customError = (code, status, field) => {
+export const handleUserErrors = (code, status, field) => {
   return {
     status,
     field,
     code: code,
-    message: userErrors[code],
+    message: Errors[code],
   };
 };

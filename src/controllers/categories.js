@@ -1,40 +1,20 @@
-import {
-  categoryCustomError,
-  departCustomError,
-  paginationCustomError,
-} from '../errors/index';
+import {handleCategoryErrors, handleDepartmentErrors} from '../errors/index';
 const Category = require ('../sequelize/models').Category;
 
 export class CategoryController {
+  /**
+   * Retrieve all categories
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} categories
+   */
   static async all (req, res) {
-    const {query: {order = 'name,ASC', page = 0, limit = 10}} = req;
-
-    const allowedFields = ['name', 'description'];
-    const allowedVal = ['DESC', 'ASC'];
+    const {query: {order = 'name,ASC', page = 1, limit = 10}} = req;
 
     const [orderField, ordering] = order.split (',');
 
-    if (
-      !allowedFields.includes (orderField) ||
-      !allowedVal.includes (ordering)
-    ) {
-      return res
-        .status (400)
-        .send ({error: paginationCustomError ('PAG_01', 400, 'order')});
-    }
-    if (isNaN (page)) {
-      return res
-        .status (400)
-        .send ({error: paginationCustomError ('PAG_01', 400, 'page')});
-    }
-    if (isNaN (limit)) {
-      return res
-        .status (400)
-        .send ({error: paginationCustomError ('PAG_01', 400, 'limit')});
-    }
-
     const setLimit = parseInt (limit, 10);
-    const offset = page ? parseInt (page) * limit : 0;
+    const offset = page ? (parseInt (page) - 1) * limit : 0;
 
     const categories = await Category.findAll ({
       offset,
@@ -47,13 +27,21 @@ export class CategoryController {
     });
   }
 
+  /**
+   * Retrieve a category
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} A single category
+   */
   static async one (req, res) {
     const {params: {category_id}} = req;
+
     if (isNaN (category_id)) {
       return res
         .status (400)
-        .send ({error: categoryCustomError ('CAT_01', 400, 'category_id')});
+        .send ({error: handleCategoryErrors ('CAT_01', 400, 'category_id')});
     }
+
     const category = await Category.findOne ({
       where: {
         category_id,
@@ -63,20 +51,27 @@ export class CategoryController {
     if (!category) {
       return res
         .status (404)
-        .send ({error: categoryCustomError ('CAT_02', 404, 'category_id')});
+        .send ({error: handleCategoryErrors ('CAT_02', 404, 'category_id')});
     }
 
     return res.status (200).send (category);
   }
 
+  /**
+   * Retrieve all categories in a given department
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} categories
+   */
   static async categoryInDepartment (req, res) {
     const {params: {department_id}} = req;
 
     if (isNaN (department_id)) {
-      return res
-        .status (400)
-        .send ({error: departCustomError ('DEP_01', 400, 'department_id')});
+      return res.status (400).send ({
+        error: handleDepartmentErrors ('DEP_01', 400, 'department_id'),
+      });
     }
+
     const categories = await Category.findAll ({
       where: {
         department_id,
@@ -84,9 +79,9 @@ export class CategoryController {
     });
 
     if (!categories.length) {
-      return res
-        .status (404)
-        .send ({error: departCustomError ('DEP_01', 400, 'department_id')});
+      return res.status (404).send ({
+        error: handleDepartmentErrors ('DEP_01', 400, 'department_id'),
+      });
     }
 
     return res.status (200).send (categories);

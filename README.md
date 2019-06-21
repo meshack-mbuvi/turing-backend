@@ -15,13 +15,13 @@ MySQL - an open-source relational database management system.
 ```
 
 ## Features requirements
-- [ ] Users can view all items when entering the website
+- [x] Users can view all items when entering the website
 - [ ] Items are displayed properly based on the selected department and category
-- [ ] Users can search items through search box
-- [ ] Support paging if we have too many items
-- [ ] Users can see item details by selecting a specific item
+- [x] Users can search items through search box
+- [x] Support paging if we have too many items
+- [x] Users can see item details by selecting a specific item
 - [ ] Users can add items to their shopping carts
-- [ ] Users can register/login using website custom forms, or social login libraries
+- [x] Users can register/login using website custom forms, or social login libraries
 - [ ] Users can update personal profiles with shipping addresses and other info
 - [ ] Users can checkout with 3rd party payment gateways: Paypal, Stripe. This requirement is mandatory, you must use the related APIs for the payment.
 -  [ ] Users will get confirmations over emails about their orders

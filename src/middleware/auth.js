@@ -1,11 +1,6 @@
 const jwt = require ('jsonwebtoken');
 
 export const authentication = (req, res, next) => {
-  const url = req.originalUrl;
-  if (url === '/api/customers' || url === '/api/customers/login') {
-    return next ();
-  }
-
   const secretKey = process.env.SECRET_KEY;
   const token = req.body.token || req.query.token || req.headers.authorization;
 
