@@ -2,17 +2,20 @@ import {createApp} from '../../src/lib/createApp';
 import request from 'supertest';
 import chai from 'chai';
 import truncate from '../truncate';
+import models from '../../src/sequelize/models/index';
 
-const Customer = require ('../../src/sequelize/models').Customer;
+// const Customer = require ('./src/sequelize/models').Customer;
 
 const {expect} = chai;
 
-describe ('All tests', () => {
+describe ('Customer tests', () => {
   let server;
   const BASE_URL = '/api/customers';
 
   before (async () => {
     await truncate ();
+    await models.Customer.destroy ({where: {}});
+
     const app = await createApp ();
     server = app.listen (3002);
   });
@@ -22,9 +25,6 @@ describe ('All tests', () => {
   });
 
   describe ('Post /api/customers', () => {
-    beforeEach (async () => {
-      await Customer.sync ({force: true});
-    });
     it ('should create user account', async () => {
       const {status} = await request (server).post (`${BASE_URL}`).send ({
         name: 'testsre',
@@ -83,6 +83,63 @@ describe ('All tests', () => {
         .post (`${BASE_URL}/login`)
         .send (data);
       expect (status).to.equal (401);
+    });
+  });
+
+  describe ('Product reviews /api/products/:product_id/reviews', () => {
+    const url = `/api/products`;
+    let token;
+    beforeEach (async () => {
+      await request (server).post (`${BASE_URL}`).send ({
+        name: 'testsre',
+        password: 'test12rterte',
+        email: 'test3mdbsjdfg@test.com',
+      });
+
+      const {body: {accessToken}} = await request (server)
+        .post (`${BASE_URL}/login`)
+        .send ({
+          password: 'test12rterte',
+          email: 'test3mdbsjdfg@test.com',
+        });
+      token = accessToken;
+    });
+
+    it ('should post reviews for a given product', async () => {
+      const {body: {review}} = await request (server)
+        .post (`${url}/91/reviews`)
+        .set ('Authorization', `Bearer ${token}`)
+        .send ({
+          rating: 5,
+          review: 'Its good',
+        });
+
+      expect (review).to.equal ('Its good');
+    });
+
+    it ('should not post reviews for a product already reviewed', async () => {
+      await request (server)
+        .post (`${url}/65/reviews`)
+        .set ('Authorization', `Bearer ${token}`)
+        .send ({
+          rating: 5,
+          review: 'Its good too',
+        });
+
+      const {status} = await request (server)
+        .post (`${url}/65/reviews`)
+        .set ('Authorization', `Bearer ${token}`)
+        .send ({
+          rating: 5,
+          review: 'Its good',
+        });
+
+      expect (status).to.equal (409);
+    });
+
+    it ('should retrieve all reviews for a given product', async () => {
+      const {status} = await request (server).get (`${url}/91/reviews`);
+      expect (status).to.equal (200);
     });
   });
 });

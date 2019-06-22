@@ -14,9 +14,28 @@ components:
     Product:
       type: object
       properties:
+        product_id:
+          type: number
+          example: 1
         name:
           type: string
-          example: shirt
+          example: Chartres Cathedral
+        description:
+          type: string
+          example: "\"The Fur Merchants\". Not all the beautiful stained glass in the great cathedrals depicts saints and angels! Lay aside your furs for the summer and wear this beautiful T-shirt!"
+        price:
+          type: number
+          example: 18.95
+        discounted_price:
+          type: number
+          example: 18.95
+        thumbnail:
+          type: string
+          example: chartres-cathedral-thumbnail.gif
+    Products:
+      type: array
+      items:
+        $ref: '#components/schemas/Product'
     Department:
       type: object
       properties:
@@ -52,7 +71,25 @@ components:
       type: array
       items:
         $ref: '#components/schemas/Category'
-
+    Review:
+      type: object
+      properties:
+        review:
+          type: string
+          example: That is a good product
+        created_on:
+          type: string
+          example: "2019-02-17 13:57:29"
+        name:
+          type: string
+          example: Eder Taveira
+        rating:
+          type: number
+          example: 4
+    Reviews:
+      type: array
+      items:
+        $ref: '#components/schemas/Review'
 
 paths:
   /products:
@@ -89,40 +126,343 @@ paths:
                     type: number
                     example: 40
                   rows:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        product_id:
-                          type: number
-                          example: 1
-                        name:
-                          type: string
-                          example: Chartres Cathedral
-                        description:
-                          type: string
-                          example: "\"The Fur Merchants\". Not all the beautiful stained glass in the great cathedrals depicts saints and angels! Lay aside your furs for the summer and wear this beautiful T-shirt!"
-                        price:
-                          type: string
-                          example: 16.95
-                        discounted_price:
-                          type: string
-                          example: 15.95
-                        thumbnail:
-                          type: string
-                          example: chartres-cathedral-thumbnail.gif
+                    $ref: '#components/schemas/Products'
+  /products/{product_id}:
+    get:
+      summary: Retrieve a single product
+      description: Retrieve a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Get All Products
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Product'
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: PROD_02
+                  message:
+                    type: string
+                    example: Product not found
+                  field:
+                    type: string
+                    example: product_id
+                  status:
+                    type: number
+                    example: 404
+  /products/{product_id}/locations:
+    get:
+      summary: Get product location details
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Product location details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category_id:
+                    type: number
+                    example: 1
+                  category_name:
+                    type: string
+                    example: French
+                  department_id:
+                    type: number
+                    example: 1
+                  department_name:
+                    type: string
+                    example: Regional
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: PROD_02
+                  message:
+                    type: string
+                    example: Product not found
+                  field:
+                    type: string
+                    example: product_id
+                  status:
+                    type: number
+                    example: 404
+  /products/inCategory/{category_id}:
+    get:
+      summary: Retrieve all products in a category
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Inform the page. Starting with 1. Default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit per page, Default: 20.
+        - in: query
+          name: description_length
+          schema:
+            type: integer
+          description: Limit of the description, Default: 200.
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 40
+                  rows:
+                    $ref: '#components/schemas/Products'
+        404:
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: CAT_02
+                  message:
+                    type: string
+                    example: Category not found
+                  field:
+                    type: string
+                    example: category_id
+                  status:
+                    type: number
+                    example: 404
+  /products/inDepartment/{department_id}:
+    get:
+      summary: Retrieve all products in a category
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: department_id
+          description: Id of the department
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Inform the page. Starting with 1. Default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit per page, Default: 20.
+        - in: query
+          name: description_length
+          schema:
+            type: integer
+          description: Limit of the description, Default: 200.
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 40
+                  rows:
+                    $ref: '#components/schemas/Products'
+        404:
+          description: Department not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: DEP_02
+                  message:
+                    type: string
+                    example: Department not found
+                  field:
+                    type: string
+                    example: department_id
+                  status:
+                    type: number
+                    example: 404
+  /products/search:
+    get:
+      summary: Search products
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: query_string
+          description: Query to search
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Inform the page. Starting with 1. Default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit per page, Default: 20.
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 40
+                  rows:
+                    $ref: '#components/schemas/Products'
+  /products/{product_id}/reviews:
+    get:
+      summary: Get product reviews
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Reviews'
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: PROD_02
+                  message:
+                    type: string
+                    example: Product not found
+                  field:
+                    type: string
+                    example: product_id
+                  status:
+                    type: number
+                    example: 404
+    post:
+      summary: Add product reviews
+      tags:
+        - Products
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                review:
+                  type: string
+                  example: This was a good product
+                rating:
+                  type: number
+                  example: 3
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Review'
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: PROD_02
+                  message:
+                    type: string
+                    example: Product not found
+                  field:
+                    type: string
+                    example: product_id
+                  status:
+                    type: number
+                    example: 404
+
   /departments:
     get:
       summary: Retrieve all departments
       description: Return a list of departments
       tags:
         - Departments
-      parameters:
-        - in: path
-          name: department_id
-          schema:
-            type: integer
-          description: ID of Department
       responses:
         200:
           description: Get All departments
@@ -140,6 +480,7 @@ paths:
       parameters:
         - in: path
           name: department_id
+          required: true
           schema:
             type: integer
           description: ID of Department
@@ -151,6 +492,25 @@ paths:
               schema:
                 type: object
                 $ref: '#components/schemas/Department'
+        404:
+          description: Department not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: DEP_02
+                  message:
+                    type: string
+                    example: Department not found
+                  field:
+                    type: string
+                    example: department_id
+                  status:
+                    type: number
+                    example: 404
   /categories:
     get:
       summary: Get categories
@@ -185,6 +545,7 @@ paths:
       parameters:
         - in: path
           name: category_id
+          required: true
           schema:
             type: integer
           description: ID of a category
@@ -196,6 +557,25 @@ paths:
               schema:
                 type: object
                 $ref: '#components/schemas/Categories'
+        404:
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: CAT_02
+                  message:
+                    type: string
+                    example: Category not found
+                  field:
+                    type: string
+                    example: category_id
+                  status:
+                    type: number
+                    example: 404
   /categories/inDepartment/{department_id}:
     get:
       summary: Get categories of a department
@@ -205,6 +585,7 @@ paths:
       parameters:
         - in: path
           name: department_id
+          required: true
           schema:
             type: integer
           description: ID of a department
@@ -220,3 +601,22 @@ paths:
                     example: 40
                   rows:
                     $ref: '#components/schemas/Categories'
+        404:
+          description: Department not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: DEP_02
+                  message:
+                    type: string
+                    example: Department not found
+                  field:
+                    type: string
+                    example: department_id
+                  status:
+                    type: number
+                    example: 404

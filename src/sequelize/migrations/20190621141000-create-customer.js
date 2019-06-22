@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable ('customer', {
-      id: {
+      customer_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -18,7 +18,7 @@ module.exports = {
         unique: true,
       },
       password: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       day_phone: {
@@ -29,14 +29,6 @@ module.exports = {
       },
       mob_phone: {
         type: Sequelize.STRING,
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
       },
     });
   },

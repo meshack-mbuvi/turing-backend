@@ -5,7 +5,7 @@ import truncate from '../truncate';
 
 const {expect} = chai;
 
-describe ('Department tests', () => {
+describe ('Category tests', () => {
   let server;
   const BASE_URL = '/api/categories';
 
@@ -35,7 +35,7 @@ describe ('Department tests', () => {
 
     it ('should handle pagination', async () => {
       const {body: {rows}} = await request (server).get (
-        `${BASE_URL}/?limit=2&order=name,ASC&page=0`
+        `${BASE_URL}/?limit=2&order=name,ASC&page=1`
       );
       expect (rows.length).to.equal (2);
     });
