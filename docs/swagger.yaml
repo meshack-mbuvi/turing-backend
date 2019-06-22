@@ -90,6 +90,19 @@ components:
       type: array
       items:
         $ref: '#components/schemas/Review'
+    Attribute:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Size
+        attribute_id:
+          type: number
+          example: 4
+    Attributes:
+      type: array
+      items:
+        $ref: '#components/schemas/Attribute'
 
 paths:
   /products:
@@ -617,6 +630,126 @@ paths:
                   field:
                     type: string
                     example: department_id
+                  status:
+                    type: number
+                    example: 404
+
+  /attributes:
+    get:
+      summary: Retrieve all product attributes
+      tags:
+        - Attributes
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Attributes'
+  /attributes/{attribute_id}:
+    get:
+      summary: Retrieve a product attribute
+      tags:
+        - Attributes
+      parameters:
+        - in: path
+          name: attribute_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Attribute'
+  /attributes/values/{attribute_id}:
+    get:
+      summary: Get values of an attribute
+      tags:
+        - Attributes
+      parameters:
+        - in: path
+          name: attribute_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attribute_value_id:
+                    type: integer
+                    example: 1
+                  value:
+                    type: string
+                    example: S
+        404:
+          description: attribute not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: PAT_02
+                  message:
+                    type: string
+                    example: attribute not found
+                  field:
+                    type: string
+                    example: attribute_id
+                  status:
+                    type: number
+                    example: 404
+  /attributes/inProduct/{product_id}:
+    get:
+      summary: Get all attributes in a product
+      tags:
+        - Attributes
+      parameters:
+        - in: path
+          name: product_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attribute_value_id:
+                    type: integer
+                    example: 1
+                  attribute_value:
+                    type: string
+                    example: S
+                  attribute_value:
+                    type: string
+                    example: Size
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: PROD_02
+                  message:
+                    type: string
+                    example: Attribute not found
+                  field:
+                    type: string
+                    example: product_id
                   status:
                     type: number
                     example: 404
