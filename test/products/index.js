@@ -86,4 +86,5 @@ describe ('Product tests', () => {
       expect (category_id).to.equal (1);
     });
   });
+
 });

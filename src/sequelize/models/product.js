@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       as: 'reviews',
     });
+
+    Product.belongsToMany (models.AttributeValue, {
+      through: 'product_attribute',
+      foreignKey: 'product_id',
+    });
   };
   return Product;
 };

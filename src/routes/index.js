@@ -4,12 +4,13 @@ import customerRoutes from './customer';
 import departmentRoutes from './department';
 import categoryRoutes from './category';
 import productRoutes from './product';
+import attributeRoutes from './attributes';
 
 const router = Router ();
 router.use ('/customers', customerRoutes);
 router.use ('/departments', departmentRoutes);
 router.use ('/categories', categoryRoutes);
-router.use('/products', productRoutes);
-
+router.use ('/products', productRoutes);
+router.use ('/attributes', attributeRoutes);
 
 export default router;
