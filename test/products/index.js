@@ -79,12 +79,11 @@ describe ('Product tests', () => {
   });
 
   describe ('Get /api/product/:product_id/locations', () => {
-    it ('should product locations', async () => {
+    it ('should get product locations', async () => {
       const {body: {category_id}} = await request (server).get (
         `${BASE_URL}/91/locations`
       );
       expect (category_id).to.equal (1);
     });
   });
-
 });

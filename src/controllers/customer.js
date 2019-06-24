@@ -86,10 +86,12 @@ export class CustomerController {
       customer &&
       bcrypt.compareSync (password, customer.dataValues.password)
     ) {
-      const accessToken = jwt.sign (
-        {customer_id: customer.dataValues.customer_id},
-        process.env.SECRET_KEY
-      );
+      const accessToken =
+        'Bearer ' +
+        jwt.sign (
+          {customer_id: customer.dataValues.customer_id},
+          process.env.SECRET_KEY
+        );
 
       customer.password = undefined;
 

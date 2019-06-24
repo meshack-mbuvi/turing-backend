@@ -5,3 +5,4 @@ export {ProductController} from './product';
 export {ReviewController} from './review';
 export {AttributeController} from './attribute';
 export {AttributeValueController} from './values';
+export {CartController} from './cart';

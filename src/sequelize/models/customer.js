@@ -21,7 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     {tableName: 'customer'}
   );
   Customer.associate = function (models) {
-    // associations can be defined here
+    Customer.hasMany (models.Orders, {
+      foreignKey: 'order_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      as: 'orders',
+    });
   };
   return Customer;
 };

@@ -1,6 +1,6 @@
 const Errors = {
   PROD_01: 'The ID is not a number.',
-  PROD_02: "Don'exist product with this ID.",
+  PROD_02: "Product with this ID does not exist.",
 };
 
 export const handleProductErrors = (code, status, field) => {

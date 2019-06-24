@@ -31,5 +31,4 @@ export class AttributeValueController {
 
     return res.status (200).send (values);
   }
-  
 }

@@ -2,7 +2,7 @@ const jwt = require ('jsonwebtoken');
 
 export const authentication = (req, res, next) => {
   const secretKey = process.env.SECRET_KEY;
-  const token = req.body.token || req.query.token || req.headers.authorization;
+  const token = req.query['user-key'] || req.headers['user-key'];
 
   if (token && token.split (' ')[0] === 'Bearer') {
     jwt.verify (token.split (' ')[1], secretKey, (error, user) => {
@@ -14,8 +14,8 @@ export const authentication = (req, res, next) => {
       }
     });
   } else {
-    return res
-      .status (401)
-      .send ({message: 'Missing authorization bearer token'});
+    return res.status (401).send ({
+      message: 'Provide authorization bearer token named USER-KEY',
+    });
   }
 };
