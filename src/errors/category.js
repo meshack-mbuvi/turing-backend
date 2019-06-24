@@ -1,6 +1,6 @@
 const Errors = {
   CAT_01: 'The ID is not a number.',
-  CAT_02: "Don'exist category with this ID.",
+  CAT_02: "Category with this ID does not exist.",
 };
 
 export const handleCategoryErrors = (code, status, field) => {

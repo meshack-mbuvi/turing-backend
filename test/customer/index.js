@@ -108,7 +108,7 @@ describe ('Customer tests', () => {
     it ('should post reviews for a given product', async () => {
       const {body: {review}} = await request (server)
         .post (`${url}/91/reviews`)
-        .set ('Authorization', `Bearer ${token}`)
+        .set ('USER-KEY', token)
         .send ({
           rating: 5,
           review: 'Its good',
@@ -120,7 +120,7 @@ describe ('Customer tests', () => {
     it ('should not post reviews for a product already reviewed', async () => {
       await request (server)
         .post (`${url}/65/reviews`)
-        .set ('Authorization', `Bearer ${token}`)
+        .set ('USER-KEY', token)
         .send ({
           rating: 5,
           review: 'Its good too',
@@ -128,7 +128,7 @@ describe ('Customer tests', () => {
 
       const {status} = await request (server)
         .post (`${url}/65/reviews`)
-        .set ('Authorization', `Bearer ${token}`)
+        .set ('USER-KEY', token)
         .send ({
           rating: 5,
           review: 'Its good',

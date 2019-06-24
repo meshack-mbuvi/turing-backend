@@ -1,6 +1,6 @@
 const Errors = {
   PAT_01: 'The ID is not a number.',
-  PAT_02: "Don'exist attribute with this ID.",
+  PAT_02: "Attribute with this ID does not exist.",
 };
 
 export const handleAttributeErrors = (code, status, field) => {

@@ -103,6 +103,35 @@ components:
       type: array
       items:
         $ref: '#components/schemas/Attribute'
+    CartItem:
+      type: object
+      properties:
+        item_id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: "Arc d'Triomphe"
+        attributes:
+          type: string
+          example: L,Red
+        product_id:
+          type: number
+          example: 1
+        image:
+          type: string
+          example: arc-d-triomphe.gif
+        price:
+          type: string
+          example: 14.99
+        quantity:
+          type: number
+          example: 2
+        subtotal: 28.98
+    CartItems:
+      type: array
+      items:
+        $ref: '#components/schemas/CartItem'
 
 paths:
   /products:
@@ -167,18 +196,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: PROD_02
-                  message:
-                    type: string
-                    example: Product not found
-                  field:
-                    type: string
-                    example: product_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PROD_02
+                      message:
+                        type: string
+                        example: Product not found
+                      field:
+                        type: string
+                        example: product_id
+                      status:
+                        type: number
+                        example: 404
   /products/{product_id}/locations:
     get:
       summary: Get product location details
@@ -196,7 +228,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+              type: object
                 properties:
                   category_id:
                     type: number
@@ -217,18 +249,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: PROD_02
-                  message:
-                    type: string
-                    example: Product not found
-                  field:
-                    type: string
-                    example: product_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PROD_02
+                      message:
+                        type: string
+                        example: Product not found
+                      field:
+                        type: string
+                        example: product_id
+                      status:
+                        type: number
+                        example: 404
   /products/inCategory/{category_id}:
     get:
       summary: Retrieve all products in a category
@@ -274,18 +309,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: CAT_02
-                  message:
-                    type: string
-                    example: Category not found
-                  field:
-                    type: string
-                    example: category_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: CAT_02
+                      message:
+                        type: string
+                        example: Category not found
+                      field:
+                        type: string
+                        example: category_id
+                      status:
+                        type: number
+                        example: 404
   /products/inDepartment/{department_id}:
     get:
       summary: Retrieve all products in a category
@@ -332,18 +370,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: DEP_02
-                  message:
-                    type: string
-                    example: Department not found
-                  field:
-                    type: string
-                    example: department_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: DEP_02
+                      message:
+                        type: string
+                        example: Department not found
+                      field:
+                        type: string
+                        example: department_id
+                      status:
+                        type: number
+                        example: 404
   /products/search:
     get:
       summary: Search products
@@ -404,18 +445,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: PROD_02
-                  message:
-                    type: string
-                    example: Product not found
-                  field:
-                    type: string
-                    example: product_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PROD_02
+                      message:
+                        type: string
+                        example: Product not found
+                      field:
+                        type: string
+                        example: product_id
+                      status:
+                        type: number
+                        example: 404
     post:
       summary: Add product reviews
       tags:
@@ -457,18 +501,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: PROD_02
-                  message:
-                    type: string
-                    example: Product not found
-                  field:
-                    type: string
-                    example: product_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PROD_02
+                      message:
+                        type: string
+                        example: Product not found
+                      field:
+                        type: string
+                        example: product_id
+                      status:
+                        type: number
+                        example: 404
 
   /departments:
     get:
@@ -512,18 +559,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: DEP_02
-                  message:
-                    type: string
-                    example: Department not found
-                  field:
-                    type: string
-                    example: department_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: DEP_02
+                      message:
+                        type: string
+                        example: Department not found
+                      field:
+                        type: string
+                        example: department_id
+                      status:
+                        type: number
+                        example: 404
   /categories:
     get:
       summary: Get categories
@@ -577,18 +627,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: CAT_02
-                  message:
-                    type: string
-                    example: Category not found
-                  field:
-                    type: string
-                    example: category_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: CAT_02
+                      message:
+                        type: string
+                        example: Category not found
+                      field:
+                        type: string
+                        example: category_id
+                      status:
+                        type: number
+                        example: 404
   /categories/inDepartment/{department_id}:
     get:
       summary: Get categories of a department
@@ -621,18 +674,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: DEP_02
-                  message:
-                    type: string
-                    example: Department not found
-                  field:
-                    type: string
-                    example: department_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: DEP_02
+                      message:
+                        type: string
+                        example: Department not found
+                      field:
+                        type: string
+                        example: department_id
+                      status:
+                        type: number
+                        example: 404
 
   /attributes:
     get:
@@ -664,6 +720,28 @@ paths:
               schema:
                 type: object
                 $ref: '#components/schemas/Attribute'
+        404:
+          description: attribute not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PAT_02
+                      message:
+                        type: string
+                        example: attribute not found
+                      field:
+                        type: string
+                        example: attribute_id
+                      status:
+                        type: number
+                        example: 404
   /attributes/values/{attribute_id}:
     get:
       summary: Get values of an attribute
@@ -695,18 +773,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: PAT_02
-                  message:
-                    type: string
-                    example: attribute not found
-                  field:
-                    type: string
-                    example: attribute_id
-                  status:
-                    type: number
-                    example: 404
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PAT_02
+                      message:
+                        type: string
+                        example: attribute not found
+                      field:
+                        type: string
+                        example: attribute_id
+                      status:
+                        type: number
+                        example: 404
   /attributes/inProduct/{product_id}:
     get:
       summary: Get all attributes in a product
@@ -741,15 +822,254 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: number
-                    example: PROD_02
-                  message:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: number
+                        example: PROD_02
+                      message:
+                        type: string
+                        example: Attribute not found
+                      field:
+                        type: string
+                        example: product_id
+                      status:
+                        type: number
+                        example: 404
+
+  /shoppingcart/generateUniqueId:
+    get:
+      summary: Generate a unique CART ID
+      tags:
+        - Shopping cart
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart_id:
                     type: string
-                    example: Attribute not found
-                  field:
-                    type: string
-                    example: product_id
-                  status:
+                    example: 123hgdre6
+  /shoppingcart/add:
+    post:
+      summary: Add a product to the cart
+      tags:
+        - Shopping cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart_id:
+                  type: string
+                  example: 123sdf34
+                product_id:
+                  type: number
+                  example: 1
+                attributes:
+                  type: string
+                  example: L,Red
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref: '#components/schemas/CartItems'
+  /shoppingcart/{cart_id}:
+    get:
+      summary: Get all items in the shopping cart
+      tags:
+        - Shopping cart
+      parameters:
+        - in: path
+          name: cart_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CartItems'
+        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: CART_01
+                      message:
+                        type: string
+                        example: Cart with provided cart_id does not exist
+                      field:
+                        type: string
+                        example: cart_id
+                      status:
+                        type: string
+                        example: 404
+  /shoppingcart/update/{item_id}:
+    put:
+      summary: Update item quantity in the cart
+      tags:
+        - Shopping cart
+      parameters:
+        - in: path
+          name: item_id
+          description: ID of the item to be updated
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  example: 3
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/CartItems'
+        400:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: CART_02
+                      message:
+                        type: string
+                        example: Quantity must be provided
+                      field:
+                        type: string
+                        example: quantity
+                      status:
+                        type: string
+                        example: 400
+        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: CART_02
+                      message:
+                        type: string
+                        example: Item with provided id does not exist in the cart
+                      field:
+                        type: string
+                        example: cart_id
+                      status:
+                        type: string
+                        example: 404
+  /shoppingcart/empty/{cart_id}:
+    delete:
+      summary: Remove all items from shopping cart
+      tags:
+        - Shopping cart
+      parameters:
+        - in: path
+          name: cart_id
+          description: ID of the cart
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+  /shoppingcart/totalAmount/{cart_id}:
+    get:
+      summary: Return total amount from cart
+      tags:
+        - Shopping cart
+      parameters:
+        - in: path
+          name: cart_id
+          description: ID of the cart
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: Return the total amount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_amount:
                     type: number
-                    example: 404
+                    example: 50
+        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: CART_02
+                      message:
+                        type: string
+                        example: Cart with provided ID not found
+                      field:
+                        type: string
+                        example: quantity
+                      status:
+                        type: string
+                        example: 404
+  /shoppingcart/removeProduct/{item_id}:
+    delete:
+      summary: Remove item from cart
+      tags:
+        - Shopping cart
+      parameters:
+        - in: path
+          name: item_id
+          description: ID of the item
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: Item removed from cart
