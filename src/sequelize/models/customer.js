@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
       },
-      password: DataTypes.TEXT,
+      password: DataTypes.STRING,
       day_phone: DataTypes.STRING,
       eve_phone: DataTypes.STRING,
       mob_phone: DataTypes.STRING,

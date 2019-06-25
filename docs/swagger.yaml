@@ -10,6 +10,11 @@ servers:
   - url: https://turing-api-endpoints.herokuapp.com/api
 
 components:
+  securitySchemes:
+    USER-KEY:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
   schemas:
     Product:
       type: object
@@ -1073,3 +1078,225 @@ paths:
                 type: object
                 properties:
                   message: Item removed from cart
+  /orders:
+    post:
+      summary: Create an order
+      tags:
+        - Orders
+      security:
+        - {}
+        - USER-KEY: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart_id:
+                  type: string
+                  example: 3sdfhg24
+                shipping_id:
+                  type: number
+                  example: 1
+                tax_id:
+                  type: number
+                  example: 1
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: number
+                    example: 1
+        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: CAT_02
+                  message:
+                    type: number
+                    example: cart with given cart_id does not exist
+                  field:
+                    type: string
+                    example: cart_id
+                  status:
+                    type: number
+                    example: 404
+  /orders/{order_id}:
+    get:
+      summary: Retrieve a single order
+      tags:
+        - Orders
+      security:
+        - {}
+        - USER-KEY: []
+      parameters:
+        - in: path
+          name: order_id
+          description: ID of the order
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: number
+                    example: 1
+        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: ORD_02
+                  message:
+                    type: number
+                    example: order with given order_id does not exist
+                  field:
+                    type: string
+                    example: order_id
+                  status:
+                    type: number
+                    example: 404
+        401:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: AUT_02
+                  message:
+                    type: number
+                    example: API key is invalid
+                  field:
+                    type: string
+                    example: API-KEY
+                  status:
+                    type: number
+                    example: 401
+  /orders/inCustomer:
+    get:
+      summary: Get orders by customer
+      tags:
+        - Orders
+      security:
+        - {}
+        - USER-KEY: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: number
+                    example: 1
+        401:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: AUT_02
+                  message:
+                    type: number
+                    example: API key is invalid
+                  field:
+                    type: string
+                    example: API-KEY
+                  status:
+                    type: number
+                    example: 401
+  /orders/shortDetail/{order_id}:
+    get:
+      summary: Get info about order
+      tags:
+        - Orders
+      security:
+        - {}
+        - USER-KEY: []
+      parameters:
+        - in: path
+          name: order_id
+          description: ID of the order
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: number
+                    example: 1
+                  total_amount:
+                    type: number
+                    example: 10.09
+                  created_on:
+                    type: string
+                    example: ''
+                  shipped_on:
+                    type: string
+                    example: ''
+                  status:
+                    type: string
+                    example: paid
+        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: ORD_02
+                  message:
+                    type: number
+                    example: order with given order_id does not exist
+                  field:
+                    type: string
+                    example: order_id
+                  status:
+                    type: number
+                    example: 404
+        401:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: AUT_02
+                  message:
+                    type: number
+                    example: API key is invalid
+                  field:
+                    type: string
+                    example: API-KEY
+                  status:
+                    type: number
+                    example: 401

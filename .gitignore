@@ -1,6 +1,7 @@
 .env
 node_modules
 dist
+.DS_Store
 
 # Coverage directory used by nyc
 .nyc_output
