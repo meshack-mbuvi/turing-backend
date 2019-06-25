@@ -1,7 +1,7 @@
-import {Router} from 'express';
-import {ReviewController} from '../controllers';
-const router = Router ();
+import { ReviewController } from '../controllers';
+import { Router } from 'express';
+const router = Router();
 
-router.get ('/', ReviewController.all);
+router.get('/', ReviewController.all);
 
 export default router;

@@ -18,7 +18,7 @@ module.exports = {
         unique: true,
       },
       password: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       day_phone: {

@@ -1,91 +1,216 @@
-import {handleCategoryErrors, handleDepartmentErrors} from '../errors/index';
-const Orders = require ('../sequelize/models').Orders;
-const ShoppingCart = require ('../sequelize/models').ShoppingCart;
-const Product = require ('../sequelize/models').Product;
+import { handleCartErrors, handleOrderErrors } from '../errors/index';
 
-export class OrdersController {
-  /**
+import { CartController } from './cart';
+import { sendEmail } from './email';
+
+const Orders = require('../sequelize/models').Orders;
+const Cart = require('../sequelize/models').Cart;
+const Product = require('../sequelize/models').Product;
+const OrderDetail = require('../sequelize/models/').OrderDetail;
+const Customer = require('../sequelize/models/').Customer;
+
+export class OrderController {
+ /**
    * Get a single order
    * @param {Object} req The request object
    * @param {Object} res The response object
    * @returns {Object} A single order
    */
   static async one (req, res) {
-    const {params: {order_id}} = req;
+    const { params: { order_id }, user: { customer_id } } = req;
 
-    if (isNaN (order_id)) {
+    if (isNaN(order_id)) {
       return res
-        .status (400)
-        .send ({error: handleOrderErrors ('ORD_01', 400, 'order_id')});
+    .status(400)
+    .send({ error: handleOrderErrors('ORD_01', 400, 'order_id') });
     }
 
-    const order = await Orders.findOne ({
+    const order = await OrderDetail.findAll({
+      where: {
+        order_id
+      },
+      include: [
+        {
+          model: Orders,
+          attributes: [],
+          include: [
+            {
+              model: Customer,
+              attributes: [],
+              where: {
+                customer_id
+              }
+            }
+          ]
+        }
+      ]
+    });
+
+    if (!order.length) {
+      return res
+    .status(404)
+    .send({ error: handleOrderErrors('ORD_02', 404, 'order_id') });
+    }
+
+    return res.status(200).send(order);
+  }
+
+ /**
+   * Get detail of a single order
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} Order detail
+   */
+  static async orderDetail (req, res) {
+    const { params: { order_id }, user: { customer_id } } = req;
+
+    if (isNaN(order_id)) {
+      return res
+    .status(400)
+    .send({ error: handleOrderErrors('ORD_01', 400, 'order_id') });
+    }
+
+    const order = await Orders.findOne({
       where: {
         order_id,
+        customer_id
       },
+      attributes: [
+        'order_id',
+        'total_amount',
+        'created_on',
+        'shipped_on',
+        'status'
+      ]
     });
 
     if (!order) {
       return res
-        .status (404)
-        .send ({error: handleOrderErrors ('ORD_02', 404, 'order_id')});
+    .status(404)
+    .send({ error: handleOrderErrors('ORD_02', 404, 'order_id') });
     }
 
-    return res.status (200).send (order);
+    const status = order.status ? 'paid' : 'not paid';
+    order.status = status;
+
+    return res.status(200).send(order);
   }
 
-  /** Order products
+ /**
+   * Get all orders for a given (logged in) customer
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} Orders
+   */
+  static async orderInCustomer (req, res) {
+    const { user: { customer_id } } = req;
+
+    const order = await Orders.findOne({
+      where: {
+        customer_id
+      },
+      attributes: [
+        'order_id',
+        'total_amount',
+        'created_on',
+        'shipped_on',
+        'status'
+      ]
+    });
+
+    if (!order) {
+      return res
+    .status(404)
+    .send({ error: handleOrderErrors('ORD_02', 404, 'order_id') });
+    }
+
+    const status = order.status ? 'paid' : 'not paid';
+    order.status = status;
+
+    return res.status(200).send(order);
+  }
+
+ /** Order products
    * @param {Object} req The request object
    * @param {Object} res The response object
    * @returns {Object} order
    */
   static async create (req, res) {
-    const {body: {cart_id, shipping_id, tax_id}} = req;
+    const { body: { cart_id, shipping_id, tax_id }, user: { customer_id } } = req;
 
-    let order = await Orders.findOne ({
-      where: {
-        cart_id,
-      },
-    });
+    try {
+      const cart = await Cart.findOne({
+        where: {
+          cart_id
+        }
+      });
 
-    if (order) {
-      return res
-        .status (409)
-        .send ({error: handleProductErrors ('ORD_02', 409, 'cart_id')});
+      if (!cart) {
+        return res
+     .status(404)
+     .send({ error: handleCartErrors('CART_01', 404, 'cart_id') });
+      }
+
+   /**
+      * Get all items in the cart and
+      * calculate total amount for the given cart
+      * */
+      const items = await CartController.getCartItems(cart_id);
+      let total_amount = 0;
+
+      items.forEach(item => {
+        total_amount += item.subtotal;
+      });
+
+   // create new order now
+      const order = await Orders.create({
+        total_amount,
+        customer_id,
+        shipping_id,
+        tax_id,
+        status: 0,
+        shipped_on: null,
+        reference: '',
+        auth_code: '',
+        comments: 'Thank you for shopping with us',
+        created_on: Date.now()
+      });
+      const { order_id } = order;
+
+   // save order detail
+      items.map(
+    async ({
+     product_id,
+     attributes,
+     quantity,
+     name: product_name,
+     price: unit_cost
+    }) => {
+      try {
+        await OrderDetail.create({
+          order_id,
+          product_id,
+          attributes,
+          product_name,
+          quantity,
+          unit_cost
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
+   );
+      const { email } = await Customer.findOne({
+        where: {
+          customer_id
+        }
+      });
 
-    const shopping_cart = await ShoppingCart.findOne ({
-      where: {
-        cart_id,
-      },
-      include: [
-        {
-          model: Product,
-          through: {
-            attributes: [],
-          },
-        },
-      ],
-    });
+      await sendEmail(email, order);
 
-    if (!shopping_cart) {
-      return res
-        .status (404)
-        .send ({error: handleProductErrors ('SPC_01', 404, 'cart_id')});
+      return res.status(201).send({ order_id });
+    } catch (error) {
+      console.log(error.message);
     }
-
-    const {product_id, attributes, quantity} = shopping_cart;
-
-    order = await Orders.create ({
-      total_amount,
-      status: 'pending',
-      comments,
-      customer_id,
-      shipping_id,
-      tax_id,
-      created_on: Date.now (),
-    });
-
-    return res.status (201).send (reviews);
   }
 }
