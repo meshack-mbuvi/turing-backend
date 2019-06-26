@@ -1,12 +1,16 @@
 import { ProductController, ReviewController } from '../controllers';
-import { authentication, handlePaginationErrors } from '../middleware/index';
+import {
+ authentication,
+ cache,
+ handlePaginationErrors,
+} from '../middleware/index';
 
 import { Router } from 'express';
 
 const router = Router();
 
 router.get('/', handlePaginationErrors, ProductController.all);
-router.get('/search', handlePaginationErrors, ProductController.search);
+router.get('/search', handlePaginationErrors,cache, ProductController.search);
 router.get('/:product_id', ProductController.one);
 router.get(
  '/inCategory/:category_id',

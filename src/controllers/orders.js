@@ -224,7 +224,7 @@ export class OrderController {
 
    return res.status(201).send({ order_id });
   } catch (error) {
-   console.log(error.message);
+   console.log(error);
   }
  }
 }

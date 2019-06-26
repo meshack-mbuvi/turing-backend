@@ -1,6 +1,6 @@
+import chai from 'chai';
 import {createApp} from '../../src/lib/createApp';
 import request from 'supertest';
-import chai from 'chai';
 import truncate from '../truncate';
 
 const {expect} = chai;
@@ -23,7 +23,7 @@ describe ('Category tests', () => {
   describe ('Get /api/categories', () => {
     it ('should retrieve all categories', async () => {
       const {body: {rows}} = await request (server).get (`${BASE_URL}`);
-      expect (rows.length).to.equal (3);
+      expect (rows.length).to.equal (7);
     });
 
     it ('should retrieve a single category', async () => {
@@ -54,7 +54,7 @@ describe ('Category tests', () => {
   describe ('Get /api/categories/inDepartment/:department_id', () => {
     it ('should retrieve all categories in a department', async () => {
       const {body} = await request (server).get (`${BASE_URL}/inDepartment/1`);
-      expect (body.length).to.equal (2);
+      expect (body.length).to.equal (3);
     });
 
     it ('should return error if department_id is not a number', async () => {

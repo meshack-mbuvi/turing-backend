@@ -14,10 +14,10 @@ const swaggerDocument = YAML.load('docs/swagger.yaml');
 export async function createApp() {
  const app = express();
 
- app.use(helmet);
  app.use(bodyParser.json());
  app.use(bodyParser.urlencoded({ extended: true }));
  app.use(cors());
+ app.use(helmet());
 
  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

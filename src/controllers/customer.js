@@ -1,6 +1,5 @@
 const Customer = require('../sequelize/models').Customer;
 
-import { StripController } from './stripe';
 import { handleUserErrors } from '../errors/index';
 
 const jwt = require('jsonwebtoken');
@@ -39,6 +38,12 @@ export class CustomerController {
      .send({ error: handleUserErrors('USR_02', 400, 'email') });
    }
 
+   if (!password) {
+    return res
+     .status(400)
+     .send({ error: handleUserErrors('USR_02', 400, 'password') });
+   }
+
    const passwordHash = bcrypt.hashSync(password, 10);
 
    const customer = await Customer.create({
@@ -61,7 +66,7 @@ export class CustomerController {
 
    // Remove password hash/stripe_customer_id from returned details
    customer.password = undefined;
-   customer.stripe_customer_id = undefined;
+   customer.stripe_customer_id ? (customer.stripe_customer_id = undefined) : '';
 
    customer.credit_card = credit_card ? `xxxxxxxx${credit_card.slice(-4)}` : '';
 
@@ -71,6 +76,7 @@ export class CustomerController {
     expires_in: '24h',
    });
   } catch (error) {
+   console.log('err ', error);
    return res
     .status(409)
     .send({ error: handleUserErrors('USR_04', 409, 'email') });

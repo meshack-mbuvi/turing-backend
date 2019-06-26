@@ -1,12 +1,14 @@
 openapi: 3.0.0
 info:
-  title: Turing API
-  description: API endpoints for Turing API
+  title: Turing API developed by Meshack Mbuvi for fun
+  summary: API endpoints for Turing API
+  description: Please select the serve below depending on whether you are using Heroku or running the application locally
 
 version: 0.1.9
 
 servers:
   - url: http://localhost:3003/api
+
   - url: https://turing-api-endpoints.herokuapp.com/api
 
 components:
@@ -781,30 +783,17 @@ paths:
                       status:
                         type: number
                         example: 404
-  /attributes/values/{attribute_id}:
+  /attributes/values:
     get:
       summary: Get values of an attribute
       tags:
         - Attributes
-      parameters:
-        - in: path
-          name: attribute_id
-          schema:
-            type: integer
-          required: true
       responses:
         200:
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  attribute_value_id:
-                    type: integer
-                    example: 1
-                  value:
-                    type: string
-                    example: S
         404:
           description: attribute not found
           content:
@@ -836,7 +825,7 @@ paths:
         - in: path
           name: product_id
           schema:
-            type: integer
+            type: string
           required: true
       responses:
         200:
@@ -929,7 +918,7 @@ paths:
         - in: path
           name: cart_id
           schema:
-            type: integer
+            type: string
           required: true
       responses:
         200:
@@ -969,7 +958,7 @@ paths:
           name: item_id
           description: ID of the item to be updated
           schema:
-            type: integer
+            type: string
           required: true
       requestBody:
         required: true
@@ -1040,7 +1029,7 @@ paths:
           name: cart_id
           description: ID of the cart
           schema:
-            type: integer
+            type: string
           required: true
       responses:
         200:
@@ -1058,7 +1047,7 @@ paths:
           name: cart_id
           description: ID of the cart
           schema:
-            type: integer
+            type: string
           required: true
       responses:
         200:
