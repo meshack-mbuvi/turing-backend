@@ -22,7 +22,7 @@ MySQL - an open-source relational database management system.
 - [x] Users can see item details by selecting a specific item
 - [x] Users can add items to their shopping carts
 - [x] Users can register/login using website custom forms, or social login libraries
-- [ ] Users can update personal profiles with shipping addresses and other info
+- [x] Users can update personal profiles with shipping addresses and other info
 - [x] Users can checkout with 3rd party payment gateways: Stripe
 - [x] Users will get confirmations over emails about their orders
 

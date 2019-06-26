@@ -1,6 +1,6 @@
 import { CategoryController } from '../controllers';
 import { Router } from 'express';
-import { handlePaginationErrors } from '../middleware/pagination';
+import { handlePaginationErrors } from '../middleware/index';
 
 const router = Router();
 
