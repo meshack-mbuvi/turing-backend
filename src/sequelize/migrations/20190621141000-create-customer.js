@@ -36,6 +36,27 @@ module.exports = {
    credit_card: {
     type: Sequelize.STRING,
    },
+   address_1: {
+    type: Sequelize.STRING,
+   },
+   address_2: {
+    type: Sequelize.STRING,
+   },
+   city: {
+    type: Sequelize.STRING,
+   },
+   region: {
+    type: Sequelize.STRING,
+   },
+   country: {
+    type: Sequelize.STRING,
+   },
+   postal_code: {
+    type: Sequelize.STRING,
+   },
+   shipping_region_id: {
+    type: Sequelize.INTEGER,
+   },
   });
  },
  down: (queryInterface, Sequelize) => {
