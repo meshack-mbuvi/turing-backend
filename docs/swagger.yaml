@@ -1300,3 +1300,60 @@ paths:
                   status:
                     type: number
                     example: 401
+  /stripe/charge:
+    post:
+      summary: Charge customer for order placed
+      tags:
+        - Stripe
+      security:
+        - {}
+        - USER-KEY: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stripeToken:
+                  type: string
+                  description: The API token, for the customer
+                order_id:
+                  type: number
+                  example: 1
+                  description: The order ID recorded when placing an order
+                description:
+                  type: string
+                  description: Description of an order
+                amount:
+                  type: number
+                  example: 1
+                  description: Total amount to be charged
+                currency:
+                  type: string
+                  example: USD
+                  description: One of the currencies supported by stripe API https://stripe.com/docs/currencies, the default
+
+Default value : USD
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: number
+                    example: 1
+                  total_amount:
+                    type: number
+                    example: 10.09
+                  created_on:
+                    type: string
+                    example: ''
+                  shipped_on:
+                    type: string
+                    example: ''
+                  status:
+                    type: string
+                    example: paid
