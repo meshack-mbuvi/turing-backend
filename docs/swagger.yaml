@@ -14,7 +14,7 @@ components:
     USER-KEY:
       type: http
       scheme: bearer
-      bearerFormat: JWT 
+      bearerFormat: JWT
   schemas:
     Product:
       type: object
@@ -137,7 +137,41 @@ components:
       type: array
       items:
         $ref: '#components/schemas/CartItem'
-
+    Customer:
+      type: object
+      properties:
+        customer_id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: Lannucci
+        email:
+          type: string
+          example: test@gmail.com
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        region:
+          type: string
+        postal_code:
+          type: string
+        country:
+          type: string
+        shipping_region:
+          type: number
+          example: 1
+        day_phone:
+          type: string
+        eve_phone:
+          type: string
+        mob_phone:
+          type: string
+        credit_card:
+          type: string
 paths:
   /products:
     get:
@@ -1300,3 +1334,326 @@ paths:
                   status:
                     type: number
                     example: 401
+  /stripe/charge:
+    post:
+      summary: Charge customer for order placed
+      tags:
+        - Stripe
+      security:
+        - {}
+        - USER-KEY: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stripeToken:
+                  type: string
+                  description: The API token, for the customer
+                order_id:
+                  type: number
+                  example: 1
+                  description: The order ID recorded when placing an order
+                description:
+                  type: string
+                  description: Description of an order
+                amount:
+                  type: number
+                  example: 1
+                  description: Total amount to be charged
+                currency:
+                  type: string
+                  example: USD
+                  description: One of the currencies supported by stripe API https://stripe.com/docs/currencies, the default Default value (USD)
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: number
+                    example: 1
+                  total_amount:
+                    type: number
+                    example: 10.09
+                  created_on:
+                    type: string
+                    example: ''
+                  shipped_on:
+                    type: string
+                    example: ''
+                  status:
+                    type: string
+                    example: paid
+  /customers:
+    post:
+      summary: Register a customer
+      tags:
+        - Customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                email:
+                  type: string
+                  description: Email of the user
+                password:
+                  type: string
+                  description: Password of user
+      responses:
+        201:
+          description: Return an object of customer with auth credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer:
+                    type: object
+                    properties:
+                      schema:
+                        type: object
+                        $ref: '#components/schemas/Customer'
+                  accessToken:
+                    type: string
+                    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE1NTA0MjQ0OTgsImV4cCI6MTU1MDUxMDg5OH0.aEFrNUPRWuRWx0IOEL-_A4J4Ti39iXEHAScm6GI61RR'
+                  expires in:
+                    type: string
+                    example: 24h
+        400:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USR_02
+                  message:
+                    type: string
+                    example: The field example is empty.
+                  field:
+                    type: string
+                    example: example
+                  status:
+                    type: string
+                    example: 400
+    get:
+      description: Retrieve a single customer
+      tags:
+        - Customers
+      security:
+        - {}
+        - USER-KEY: []
+      responses:
+        200:
+          description: Return an object of customer
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Customer'
+    put:
+      description: Update customer details
+      tags:
+        - Customers
+      security:
+        - {}
+        - USER-KEY: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                day_phone:
+                  type: string
+                eve_phone:
+                  type: string
+                mob_phone:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        200:
+          description: Return an object of customer
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Customer'
+  /customers/login:
+    post:
+      summary: Login a customer
+      tags:
+        - Customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email of the user
+                password:
+                  type: string
+                  description: Password of user
+      responses:
+        200:
+          description: Return an object of customer with auth credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer:
+                    type: object
+                    properties:
+                      schema:
+                        type: object
+                        $ref: '#components/schemas/Customer'
+                  accessToken:
+                    type: string
+                    example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE1NTA0MjQ0OTgsImV4cCI6MTU1MDUxMDg5OH0.aEFrNUPRWuRWx0IOEL-_A4J4Ti39iXEHAScm6GI61RR'
+                  expires in:
+                    type: string
+                    example: 24h
+        401:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USR_02
+                  message:
+                    type: string
+                    example: Wrong email or password.
+                  field:
+                    type: string
+                    example: example
+                  status:
+                    type: string
+                    example: 401
+  /customers/address:
+    put:
+      summary: Update customer address details
+      tags:
+        - Customers
+      security:
+        - {}
+        - USER-KEY: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address_1:
+                  type: string
+                  description: Address 1
+                address_2:
+                  type: string
+                  description: Address 2
+                city:
+                  type: string
+                  description: city
+                region:
+                  type: string
+                  description: region
+                postal_code:
+                  type: string
+                  description: Postal code
+                country:
+                  type: string
+                  description: Country
+                shipping_region_id:
+                  type: string
+                  description: shipping region id
+      responses:
+        200:
+          description: Return an object of customer
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Customer'
+        401:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USR_02
+                  message:
+                    type: string
+                    example: Wrong email or password.
+                  field:
+                    type: string
+                    example: example
+                  status:
+                    type: string
+  /customers/creditCard:
+    put:
+      summary: Update customer credit card details
+      tags:
+        - Customers
+      security:
+        - {}
+        - USER-KEY: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credit_card:
+                  type: string
+                  description: Credit card number
+      responses:
+        200:
+          description: Return an object of customer
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#components/schemas/Customer'
+        401:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: USR_02
+                  message:
+                    type: string
+                    example: Wrong email or password.
+                  field:
+                    type: string
+                    example: example
+                  status:
+                    type: string

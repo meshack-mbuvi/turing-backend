@@ -7,3 +7,4 @@ export { handleReviewErrors } from './review';
 export { handleAttributeErrors } from './attribute';
 export { handleCartErrors } from './cart';
 export { handleOrderErrors } from './order';
+export { handleStripeErrors } from './stripe';
