@@ -129,6 +129,36 @@ export class CustomerController {
  }
 
  /**
+   * Retrieve single customer
+   * customer data with assigned token
+   * @param {Object} req The request object
+   * @param {Object} res The response object
+   * @returns {Object} customer details
+   */
+ static async one(req, res) {
+  const { user: { customer_id } } = req;
+
+  try {
+   const customer = await Customer.findOne({ where: { customer_id } });
+
+   if (!customer) {
+    return res.status(404).send({
+     error: handleUserErrors('USR_05', 404, 'email'),
+    });
+   }
+   customer.password = '';
+   customer.credit_card = customer.credit_card
+    ? `xxxxxxxx${credit_card.slice(-4)}`
+    : '';
+
+   return res.status(401).send(customer);
+  } catch (error) {
+   console.log(error);
+   return res.send(error.message);
+  }
+ }
+
+ /**
    * update customer details
    * @param {Object} req The request object
    * @param {Object} res The response object
@@ -137,14 +167,8 @@ export class CustomerController {
  static async update(req, res) {
   try {
    const {
-    body: {
-     name,
-     email,
-     password,
-     eve_phone,
-     day_phone,
-     mob_phone,
-    },
+    body: { name, email, password, eve_phone, day_phone, mob_phone },
+    user: { customer_id },
    } = req;
 
    if (!name) {
@@ -161,25 +185,29 @@ export class CustomerController {
 
    const passwordHash = bcrypt.hashSync(password, 10);
 
-   const customer = await Customer.create({
-    name,
-    email,
-    password: passwordHash,
-    eve_phone: eve_phone || '',
-    day_phone: day_phone || '',
-    mob_phone: mob_phone || '',
-    stripe_customer_id: '',
-   });
-
+   const customer = await Customer.update(
+    {
+     name,
+     email,
+     password: passwordHash,
+     eve_phone: eve_phone || '',
+     day_phone: day_phone || '',
+     mob_phone: mob_phone || '',
+     stripe_customer_id: '',
+    },
+    {
+     where: {
+      customer_id,
+     },
+    }
+   );
 
    return res.status(200).send({
     customer,
-    accessToken,
-    expires_in: '24h',
    });
   } catch (error) {
    return res
-    .status(409)
+    .status(401)
     .send({ error: handleUserErrors('USR_04', 409, 'email') });
   }
  }
@@ -206,7 +234,6 @@ export class CustomerController {
 
   try {
    if (
-    !name ||
     !address_1 ||
     !address_2 ||
     !city ||
@@ -220,7 +247,7 @@ export class CustomerController {
      .send({ error: handleUserErrors('USR_02', 400, 'fields') });
    }
 
-   const customer = await Customer.update(
+   await Customer.update(
     {
      address_1,
      address_2,
@@ -237,8 +264,11 @@ export class CustomerController {
     }
    );
 
-   return res.send(customer);
+   return res.send({
+    message: 'Customer details updated',
+   });
   } catch (error) {
+   console.log(error);
    return res.send({
     error: {
      message: 'An error has occurred while updating details',
@@ -264,7 +294,8 @@ export class CustomerController {
      .status(400)
      .send({ error: handleUserErrors('USR_02', 400, 'fields') });
    }
-   const customer = await Customer.update(
+
+   await Customer.update(
     {
      credit_card,
     },
@@ -275,7 +306,9 @@ export class CustomerController {
     }
    );
 
-   return res.send(customer);
+   return res.send({
+    message: 'Credit card details updated.',
+   });
   } catch (error) {
    return res.send({
     error: {
